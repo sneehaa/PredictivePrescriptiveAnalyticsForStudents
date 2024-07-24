@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li>
+                    <a href="#" id="gpa-button"><i class="fas fa-chart-line"></i> GPA</a>
+                </li>
+                <li>
+                    <a href="#" id="attendance-button"><i class="fas fa-calendar-check"></i> Attendance</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('recommendations') }}"><i class="fas fa-book"></i> Recommendations</a>
+                </li>
+                <li>
+                    <a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+            <h2 style="color: black">Welcome, {{ user.id }}</h2>
+            {% if prescriptive_message %}
+                <p class="prescriptive-message {{ prescriptive_message_class }}">
+                    <i class="fas fa-lightbulb"></i> {{ prescriptive_message }}
+                </p>
+            {% endif %}
+            <div id="gpa" class="semester-gpa" style="display: none">
+                <h3>Semester GPA</h3>
+                <div class="circle-container">
+                    {% for i in range(6) %}
+                        <div class="circle {{ user.semester_marks[i]|get_circle_class }}">
+                            {{ user.semester_marks[i] }}
+                            <div class="semester-label">Semester {{ i + 1 }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="attendance" class="semester-attendance" style="display: none">
+                <h3>Semester Attendance</h3>
+                <div class="circle-container">
+                    {% for i in range(6) %}
+                        <div class="circle {{ user.attendance[i]|get_circle_class }}">
+                            {{ user.attendance[i] }}
+                            <div class="semester-label">Semester {{ i + 1 }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("gpa-button").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("gpa").style.display = "block";
+            document.getElementById("attendance").style.display = "none";
+        });
+
+        document.getElementById("attendance-button").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("gpa").style.display = "none";
+            document.getElementById("attendance").style.display = "block";
+        });
+
+        document.getElementById("logout-button").addEventListener("click", function (e) {
+            e.preventDefault();
+            window.location.href = "{{ url_for('logout') }}";
+        });
+    </script>
+</body>
+</html>
