@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #7db0d8; /* Light shade of blue */
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+}
+
+.sidebar ul li a:hover {
+  background-color: #92c1a1;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.content h2 {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.prescriptive-message {
+  color: inherit!important;
+}
+
+.prescriptive-message.good {
+  color: #3e8e41!important; /* Dark green */
+}
+
+.prescriptive-message.bad {
+  color: #e74c3c!important; /* Dark red */
+}
+
+.circle-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.circle .progress {
+  display: none; /* Remove the progress element */
+}
+
+.circle .attendance-text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  border: 2px solid #7db0d8;
+}
+
+.attendance-percentage {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.circle .semester-label {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.circle .attendance-text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.semester-gpa, .semester-attendance {
+  display: none; /* hide both sections by default */
+}
+
+.show-semester-gpa, .show-semester-attendance {
+  display: block; /* show the selected section */
+}
