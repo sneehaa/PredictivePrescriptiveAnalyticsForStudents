@@ -1,313 +1,157 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recommended Learning Resources</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f4f4f4;
-      }
+{% extends 'base.html' %}
 
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        margin-top: 20px;
-      }
+{% block title %}Recommended Learning Resources{% endblock %}
 
-      .sidebar {
-        width: 200px;
-        background: #7db0d8;
-        padding: 20px;
-        color: #fff;
-        border-radius: 8px;
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        overflow-y: auto;
-      }
+{% block sidebar_title %}Recommendation Learning{% endblock %}
 
-      .sidebar h2 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-      }
+{% block content %}
+<h1>Recommended Learning Resources</h1>
+<div class="search-container">
+    <form action="{{ url_for('recommendations') }}" method="GET">
+        <input type="text" id="search-input" name="query" placeholder="Search your questions..." value="{{ request.args.get('query', '') }}" />
+        <button type="submit" id="search-button">Search</button>
+    </form>
+</div>
 
-      .sidebar ul {
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-      }
+{% if not profile_updated %}
+    <p>
+        Looking for recommendations?
+        <a href="{{ url_for('profile') }}">Update your profile</a> to get
+        personalized suggestions.
+    </p>
+{% endif %}
+<ul id="resource-list">
+    {% if resources %}
+        {% for resource in resources %}
+            <li>
+                <h2>{{ resource.title }}</h2>
+                <p>{{ resource.summary | truncate(100) }}</p>
+                <p><strong>Subject:</strong> {{ resource.subject }}</p>
+                <p><strong>Learning Style:</strong> {{ resource.learning_style }}</p>
+                {% if resource.resource_type == 'video' %}
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/{{ resource.link.split('v=')[1] }}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                {% elif resource.resource_type == 'book' %}
+                    {% if resource.thumbnail %}
+                        <img src="{{ resource.thumbnail }}" alt="Book Thumbnail" class="book-thumbnail" />
+                    {% endif %}
+                {% elif resource.resource_type == 'paper' %}
+                    <p><a href="{{ resource.link }}" target="_blank">Read the Paper</a></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</ul>
+<style>
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
 
-      .sidebar ul li {
-        margin-bottom: 10px;
-      }
+h1 {
+    text-align: center;
+    color: #333;
+}
 
-      .sidebar a {
-        text-decoration: none;
-        color: #fff;
-        display: block;
-        padding: 10px;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-      }
+a {
+    color: #007bff;
+    text-decoration: none;
+}
 
-      .sidebar a:hover {
-        background-color: #92c1a1;
-      }
+a:hover {
+    text-decoration: underline;
+}
 
-      .content {
-        flex: 1;
-        max-width: 800px;
-        background-color: #fff;
-        padding: 40px;
-        margin-left: 240px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-      }
+/* Search container */
+.search-container {
+    text-align: center;
+    margin: 20px 0;
+}
 
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 2rem;
-        color: #333;
-      }
+#search-input {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-      ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
+#search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
 
-      li {
-        margin-bottom: 20px;
-      }
+#search-button:hover {
+    background-color: #0056b3;
+}
 
-      h2 {
-        margin-bottom: 10px;
-        font-size: 1.2rem;
-        color: #fffdfd;
-      }
+/* Profile update prompt */
+p {
+    text-align: center;
+    color: #666;
+}
 
-      p {
-        margin-bottom: 10px;
-        color: #555;
-      }
+/* Resource list */
+#resource-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 
-      a {
-        text-decoration: none;
-        color: #007bff;
-      }
+#resource-list li {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
 
-      a:hover {
-        text-decoration: underline;
-      }
+#resource-list h2 {
+    margin-top: 0;
+    color: #333;
+}
 
-      .alert {
-        padding: 20px;
-        color: white;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        text-align: center;
-      }
+#resource-list p {
+    margin: 5px 0;
+}
 
-      .alert.success {
-        background-color: #4caf50;
-      }
+.book-thumbnail {
+    max-width: 100px;
+    height: auto;
+}
 
-      .alert.error {
-        background-color: #f44336;
-      }
+/* Video container */
+.video-container {
+    text-align: center;
+    margin: 20px 0;
+}
 
-      .video-container {
-        position: relative;
-        padding-bottom: 56.25%; /* 16:9 aspect ratio */
-        height: 0;
-        overflow: hidden;
-        max-width: 100%;
-        background: #000;
-        border-radius: 8px;
-      }
+.video-container iframe {
+    max-width: 100%;
+    height: 315px; /* Adjust height as needed */
+    border: none;
+}
 
-      .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
+/* Responsive design */
+@media (max-width: 768px) {
+    #search-input {
         width: 100%;
-        height: 100%;
-      }
+    }
 
-      .book-thumbnail {
-        max-width: 100%;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        max-height: 150px; /* Adjust height if necessary */
-      }
-
-      .search-container {
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: center;
-      }
-
-      .search-container input {
-        width: 300px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-
-      .search-container button {
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #007bff;
-        color: #fff;
-        cursor: pointer;
-        margin-left: 10px;
-      }
-
-      .search-container button:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="sidebar">
-        <h2>Recommendation Learning</h2>
-        <ul>
-          <li>
-            <a href="{{ url_for('dashboard') }}">
-              <i class="fas fa-user"></i> Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('profile') }}">
-              <i class="fas fa-user"></i> Profile
-            </a>
-          </li>
-          <li>
-            <a href="#" id="logout-button">
-              <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="content">
-        <h1>Recommended Learning Resources</h1>
-        <div class="search-container">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search your questions..."
-          />
-          <button id="search-button">Search</button>
-        </div>
-        {% if not profile_updated %}
-        <p>
-          Looking for recommendations?
-          <a href="{{ url_for('profile') }}">Update your profile</a> to get
-          personalized suggestions.
-        </p>
-        {% endif %}
-
-        <ul id="resource-list">
-          {% for resource in resources %}
-          <li>
-            <h2>{{ resource.title }}</h2>
-            <p>{{ resource.summary | truncate(100) }}</p>
-            <p><strong>Subject:</strong> {{ resource.subject }}</p>
-            <p>
-              <strong>Learning Style:</strong> {{ resource.learning_style }}
-            </p>
-            {% if resource.resource_type == 'video' %}
-            <div class="video-container">
-              <iframe
-                src="https://www.youtube.com/embed/{{ resource.link.split('v=')[1] }}"
-                frameborder="0"
-                allowfullscreen
-              ></iframe>
-            </div>
-            {% elif resource.resource_type == 'book' %} {% if resource.thumbnail
-            %}
-            <img
-              src="{{ resource.thumbnail }}"
-              alt="Book Thumbnail"
-              class="book-thumbnail"
-            />
-            {% endif %} {% elif resource.resource_type == 'paper' %}
-            <p>
-              <a href="{{ resource.link }}" target="_blank">Read the Paper</a>
-            </p>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-
-    <script>
-      const listContainer = document.getElementById("resource-list");
-      const searchInput = document.getElementById("search-input");
-      const searchButton = document.getElementById("search-button");
-
-      searchButton.addEventListener("click", () => {
-        const searchQuery = searchInput.value.trim();
-        loadResources(searchQuery);
-      });
-
-      function loadResources(searchQuery) {
-        const url = `/resources?search=${encodeURIComponent(searchQuery)}`;
-        fetch(url)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Fetched data:", data); // Log the fetched data
-            appendResourcesToDOM(data);
-          })
-          .catch((error) => {
-            console.error("Error fetching resources:", error);
-            listContainer.innerHTML =
-              "<li>Error fetching resources. Please try again later.</li>";
-          });
-      }
-
-      function appendResourcesToDOM(resources) {
-        console.log("Appending resources:", resources); // Log the resources to be appended
-
-        if (resources.length === 0) {
-          listContainer.innerHTML = "<li>No resources found.</li>";
-          return;
-        }
-
-        listContainer.innerHTML = ""; // Clear previous results
-
-        resources.forEach((resource) => {
-          console.log("Resource:", resource); // Log each resource
-
-          const resourceHTML = `
-      <li>
-        <h2>${resource.title}</h2>
-        <p>${
-          resource.answer ? resource.answer : "No direct answer available."
-        }</p>
-      </li>`;
-          listContainer.insertAdjacentHTML("beforeend", resourceHTML);
-        });
-      }
-    </script>
-  </body>
-</html>
+    #search-button {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

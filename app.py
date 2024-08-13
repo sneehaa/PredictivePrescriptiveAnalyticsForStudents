@@ -1,6 +1,7 @@
 from flask import Flask, abort, request, render_template, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS  # Importing flask_cors
 import joblib
 from forms import UserProfileForm
 from models import db, User, Resource
@@ -9,11 +10,15 @@ import csv
 import os
 from resource_fetcher import fetch_books, fetch_research_papers, fetch_youtube_videos
 from sklearn.preprocessing import StandardScaler
+from chat import get_response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '4bc99783f8ecc9b1b94165edf0368c4f'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'app.db')
+
+# Enable CORS for the Flask app
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Initialize the database
 db.init_app(app)
@@ -60,9 +65,8 @@ if os.path.exists(csv_file_path):
             except ValueError as e:
                 print(f"ValueError: {e} in row {row}")
 
-                # Load the trained model
+# Load the trained model
 model = joblib.load('student_performance_model.pkl')
-
 
 # Initialize AI generator
 generator = pipeline('text-generation', model='gpt2')
@@ -189,35 +193,33 @@ def recommendations():
     if not user:
         abort(404)  # Redirect to a 404 page if user is not found
 
-    if request.method == 'POST':
-        search_query = request.form.get('search', '')
-        # Fetch recommendations based on search query
+    # Determine the search query
+    query = request.args.get('query', '').strip() if request.method == 'GET' else request.form.get('query', '').strip()
+
+    if query:
+        # Fetch recommendations based on the search query
         if user.learning_style == 'Visual':
-            resources = fetch_youtube_videos(search_query)
+            resources = fetch_youtube_videos(query)
         elif user.learning_style == 'Reading/Writing':
-            resources = fetch_research_papers(search_query)
+            resources = fetch_research_papers(query)
         elif user.learning_style == 'In-person':
-            resources = fetch_books(search_query)
+            resources = fetch_books(query)
+        else:
+            resources = []
+    else:
+        # Fetch recommendations based on user's learning style and preferred subject
+        if user.learning_style == 'Visual':
+            resources = fetch_youtube_videos(user.preferred_subject)
+        elif user.learning_style == 'Reading/Writing':
+            resources = fetch_research_papers(user.preferred_subject)
+        elif user.learning_style == 'In-person':
+            resources = fetch_books(user.preferred_subject)
         else:
             resources = []
 
-        return render_template('recommendations.html', resources=resources, user=user, show_search=True)
-
-    # If profile is updated, show recommendations
-    if not user.preferred_subject or not user.learning_style:
-        return render_template('recommendations.html', user=user, show_search=False)
-    
-    # Fetch recommendations based on user's learning style and preferred subject
-    if user.learning_style == 'Visual':
-        resources = fetch_youtube_videos(user.preferred_subject)
-    elif user.learning_style == 'Reading/Writing':
-        resources = fetch_research_papers(user.preferred_subject)
-    elif user.learning_style == 'In-person':
-        resources = fetch_books(user.preferred_subject)
-    else:
-        resources = []
-
     return render_template('recommendations.html', resources=resources, user=user, show_search=True)
+
+
 
 @app.route('/resources', methods=['GET'])
 def get_resources():
@@ -227,12 +229,29 @@ def get_resources():
 
     # Add additional logic to prioritize answers
     for resource in resource_data:
-        if not resource['answer']:
+        if not resource.get('answer'):
             resource['answer'] = "No direct answer available."
 
     return jsonify(resource_data)
 
+@app.route('/search')
+def search():
+    query = request.args.get('query', '')
+    resources = Resource.query.filter(
+        Resource.title.ilike(f'%{query}%') |
+        Resource.subject.ilike(f'%{query}%') |
+        Resource.learning_style.ilike(f'%{query}%')
+    ).all()
+    resource_data = [resource.to_dict() for resource in resources]
+    return render_template('search_results.html', resources=resource_data, query=query)
 
+
+@app.post("/predict")
+def predict():
+    text = request.get_json().get("message")
+    response = get_response(text)
+    message = {"answer": response}
+    return jsonify(message)
 
 
 

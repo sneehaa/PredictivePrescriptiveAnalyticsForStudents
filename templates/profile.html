@@ -1,231 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Profile</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f4f4f4;
-      }
+{% extends 'base.html' %}
 
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 2rem;
-        color: #333;
-      }
+{% block title %}User Profile{% endblock %}
 
-      ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
+{% block sidebar_title %}User Profile{% endblock %}
 
-      ul li {
-        margin: 10px 0;
-      }
-
-      a {
-        text-decoration: none;
-        color: #333;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        margin-top: 20px;
-      }
-
-      .sidebar {
-        width: 200px;
-        background: #7db0d8;
-        padding: 20px;
-        color: #fff;
-        border-radius: 8px;
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        overflow-y: auto;
-      }
-
-      .sidebar h2 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-      }
-
-      .sidebar ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .sidebar ul li {
-        margin: 10px 0;
-      }
-
-      .sidebar ul li a:hover {
-        background-color: #92c1a1;
-      }
-      .sidebar a {
-        color: #fff;
-      }
-
-      .content {
-        flex: 1;
-        max-width: 800px;
-        background-color: #fff;
-        padding: 40px;
-        margin-left: 240px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      .form-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #555;
-      }
-
-      .form-control {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        transition: border-color 0.3s;
-      }
-
-      .form-control:focus {
-        border-color: #7db0d8;
-        outline: none;
-      }
-
-      .form-control.select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 40px;
-        cursor: pointer;
-      }
-
-      .btn-primary {
-        background-color: #7db08d;
-        color: #fff;
-        border: none;
-        padding: 12px 20px;
-        cursor: pointer;
-        border-radius: 20px;
-        font-size: 16px;
-        transition: background-color 0.3s;
-      }
-
-      .btn-primary:hover {
-        background-color: #5a8f6b;
-      }
-
-      .alert {
-        padding: 20px;
-        color: white;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        text-align: center;
-      }
-
-      .alert.success {
-        background-color: #4caf50;
-      }
-
-      .alert.error {
-        background-color: #f44336;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="container">
-      <div class="sidebar">
-        <h2>User Profile</h2>
-        <ul>
-          <li>
-            <a href="{{ url_for('dashboard') }}">
-              <i class="fas fa-user"></i> Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('profile') }}">
-              <i class="fas fa-user"></i> Profile
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('recommendations') }}"
-              ><i class="fas fa-book"></i> Recommendations</a
-            >
-          </li>
-          <li>
-            <a href="#" id="logout-button">
-              <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="content">
-        <h1>Fill the form as per your requirement</h1>
-        {% if error %}
-        <div class="alert error">{{ error }}</div>
-        {% endif %}
-        <form method="POST" action="">
-          {{ form.hidden_tag() }}
-          <div class="form-group">
-            {{ form.preferred_subject.label }} {{
-            form.preferred_subject(class="form-control select") }}
-          </div>
-          <div class="form-group">
-            {{ form.learning_style.label }} {{
-            form.learning_style(class="form-control select") }}
-          </div>
-          <div class="form-group">
-            {{ form.strengths.label }} {{ form.strengths(class="form-control")
-            }}
-          </div>
-          <div class="form-group">
-            {{ form.weaknesses.label }} {{ form.weaknesses(class="form-control")
-            }}
-          </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-        </form>
-      </div>
+{% block content %}
+<h1>Fill the form as per your requirement</h1>
+{% if error %}
+    <div class="alert error">{{ error }}</div>
+{% endif %}
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.preferred_subject.label }} {{ form.preferred_subject(class="form-control select") }}
     </div>
+    <div class="form-group">
+        {{ form.learning_style.label }} {{ form.learning_style(class="form-control select") }}
+    </div>
+    <div class="form-group">
+        {{ form.strengths.label }} {{ form.strengths(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.weaknesses.label }} {{ form.weaknesses(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+</form>
 
-    <script>
-      document
-        .getElementById("logout-button")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          window.location.href = "{{ url_for('logout') }}";
-        });
-    </script>
-  </body>
-</html>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+  }
+
+  .alert {
+    padding: 20px;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .alert.success {
+    background-color: #4caf50;
+  }
+
+  .alert.error {
+    background-color: #f44336;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #7db0d8;
+    outline: none;
+  }
+
+  .form-control.select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #7db08d;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .btn-primary:hover {
+    background-color: #5a8f6b;
+  }
+</style>
+
+<script>
+  document
+    .getElementById("logout-button")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      window.location.href = "{{ url_for('logout') }}";
+    });
+</script>
+{% endblock %}

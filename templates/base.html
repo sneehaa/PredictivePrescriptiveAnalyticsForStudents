@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>{% block sidebar_title %}Sidebar{% endblock %}</h2>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="{{ url_for('recommendations') }}"><i class="fas fa-book"></i> Recommendations</a></li>
+                <li><a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Include the chatbot HTML -->
+    {% include 'chatbot.html' %}
+
+    <script>
+        document.getElementById("logout-button").addEventListener("click", function (e) {
+            e.preventDefault();
+            window.location.href = "{{ url_for('logout') }}";
+        });
+
+        // Add functionality to toggle chatbot visibility
+        document.querySelector('.chatbot__button').addEventListener('click', function () {
+            const chatbotSupport = document.querySelector('.chatbot__support');
+            if (chatbotSupport.style.display === 'none' || chatbotSupport.style.display === '') {
+                chatbotSupport.style.display = 'block';
+            } else {
+                chatbotSupport.style.display = 'none';
+            }
+        });
+    </script>
+   
+</body>
+</html>

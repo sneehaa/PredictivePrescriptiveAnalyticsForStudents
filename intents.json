@@ -1,0 +1,127 @@
+{
+    "intents": [
+      {
+        "tag": "greeting",
+        "patterns": [
+          "Hi",
+          "Hey",
+          "How are you",
+          "Is anyone there?",
+          "Hello",
+          "Good day"
+        ],
+        "responses": [
+          "Hey there! How can I assist you with computer science today?",
+          "Hello, thanks for visiting! How can I help with your computer science queries?",
+          "Hi there, what computer science topic are you interested in?",
+          "Hi there, how can I assist you with your studies?"
+        ]
+      },
+      {
+        "tag": "goodbye",
+        "patterns": ["Bye", "See you later", "Goodbye"],
+        "responses": [
+          "See you later, thanks for visiting!",
+          "Have a great day! Keep coding!",
+          "Bye! Come back soon with more computer science questions."
+        ]
+      },
+      {
+        "tag": "thanks",
+        "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
+        "responses": ["Happy to help! Keep learning!", "Anytime! Good luck with your studies!", "My pleasure, happy coding!"]
+      },
+      {
+        "tag": "programming_languages",
+        "patterns": [
+          "What programming languages should I learn?",
+          "Which programming languages are popular?",
+          "Tell me about programming languages"
+        ],
+        "responses": [
+          "Popular programming languages include Python, Java, JavaScript, C++, and Ruby.",
+          "You might want to start with Python, it's great for beginners!",
+          "JavaScript is essential for web development, while Python is widely used in data science and AI."
+        ]
+      },
+      {
+        "tag": "algorithms",
+        "patterns": [
+          "What are algorithms?",
+          "Explain algorithms",
+          "Tell me about algorithms"
+        ],
+        "responses": [
+          "Algorithms are step-by-step procedures for solving problems or performing tasks.",
+          "They are essential in computer science for tasks like sorting, searching, and optimization.",
+          "Examples include sorting algorithms like quicksort and search algorithms like binary search."
+        ]
+      },
+      {
+        "tag": "data_structures",
+        "patterns": [
+          "What are data structures?",
+          "Explain data structures",
+          "Tell me about data structures"
+        ],
+        "responses": [
+          "Data structures are ways to organize and store data so that it can be accessed and modified efficiently.",
+          "Common data structures include arrays, linked lists, stacks, queues, trees, and graphs.",
+          "They are fundamental to designing efficient algorithms."
+        ]
+      },
+      {
+        "tag": "machine_learning",
+        "patterns": [
+          "What is machine learning?",
+          "Explain machine learning",
+          "Tell me about machine learning"
+        ],
+        "responses": [
+          "Machine learning is a field of artificial intelligence that focuses on teaching computers to learn from data and make predictions or decisions.",
+          "It's used in various applications like speech recognition, image analysis, and recommendation systems.",
+          "Key concepts include supervised learning, unsupervised learning, and reinforcement learning."
+        ]
+      },
+      {
+        "tag": "web_development",
+        "patterns": [
+          "What is web development?",
+          "Explain web development",
+          "Tell me about web development"
+        ],
+        "responses": [
+          "Web development involves building and maintaining websites and web applications.",
+          "It can be divided into front-end development (what users see) and back-end development (server-side logic and database management).",
+          "Popular technologies include HTML, CSS, JavaScript for front-end, and Node.js, Django, or Ruby on Rails for back-end."
+        ]
+      },
+      {
+        "tag": "databases",
+        "patterns": [
+          "What are databases?",
+          "Explain databases",
+          "Tell me about databases"
+        ],
+        "responses": [
+          "Databases are organized collections of data that can be easily accessed, managed, and updated.",
+          "Common types include relational databases like MySQL and PostgreSQL, and NoSQL databases like MongoDB.",
+          "They are used to store data for applications, websites, and other systems."
+        ]
+      },
+      {
+        "tag": "cybersecurity",
+        "patterns": [
+          "What is cybersecurity?",
+          "Explain cybersecurity",
+          "Tell me about cybersecurity"
+        ],
+        "responses": [
+          "Cybersecurity involves protecting computer systems, networks, and data from digital attacks.",
+          "It includes practices like encryption, network security, and incident response.",
+          "Key areas are protecting against malware, phishing, and data breaches."
+        ]
+      }
+    ]
+  }
+  

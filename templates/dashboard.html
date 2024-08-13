@@ -6,6 +6,8 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Add Font Awesome -->
 </head>
 <body>
     <div class="container">
@@ -61,6 +63,37 @@
         </div>
     </div>
 
+    <!-- Chatbot integration -->
+    <div class="chatbot">
+        <!-- Initially visible chatbot icon -->
+        <div class="chatbot__button">
+            <button>
+                <img src="{{ url_for('static', filename='images/chatbot.png') }}" alt="Chatbot Icon">
+            </button>
+        </div>
+        <!-- Initially hidden chatbox -->
+        <div class="chatbot__support" style="display: none;">
+            <div class="chatbot__header">
+                <p class="chatbot__constant-text">Ask me anything</p>
+                <div class="chatbot__buttons">
+                    <button class="chatbot__close--button">
+                        <i class="fas fa-times"></i> <!-- Font Awesome close icon -->
+                    </button>
+                    <button class="chatbot__delete--button">
+                        <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                    </button>
+                </div>
+            </div>
+            <div class="chatbot__messages">
+                <!-- Chat messages will be inserted here -->
+            </div>
+            <div class="chatbot__footer">
+                <input type="text" placeholder="Type a question...">
+                <button class="chatbot__send--footer">Send</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.getElementById("gpa-button").addEventListener("click", function (e) {
             e.preventDefault();
@@ -78,6 +111,20 @@
             e.preventDefault();
             window.location.href = "{{ url_for('logout') }}";
         });
+
+        // Chatbot functionality
+        const chatbotButton = document.querySelector(".chatbot__button");
+        const chatbotSupport = document.querySelector(".chatbot__support");
+        const chatbotCloseButton = document.querySelector(".chatbot__close--button");
+
+        chatbotButton.addEventListener("click", function() {
+            chatbotSupport.style.display = "block";
+        });
+
+        chatbotCloseButton.addEventListener("click", function() {
+            chatbotSupport.style.display = "none";
+        });
     </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
