@@ -1,7 +1,7 @@
 from flask import Flask, abort, request, render_template, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_cors import CORS  # Importing flask_cors
+from flask_cors import CORS  
 import joblib
 from forms import UserProfileForm
 from models import db, User, Resource
@@ -263,6 +263,36 @@ def get_circle_class(mark):
         return 'circle-half'
     else:
         return 'circle-low'
+    
+
+@app.route('/api/gpa', methods=['GET'])
+def get_gpa_data():
+    user_id = session.get('student_id')
+    user = User.query.get(user_id)
+    if not user:
+        abort(404)
+    
+    data = {
+        'semesters': [f'Semester {i+1}' for i in range(6)],
+        'gpas': user.semester_marks + [user.grade]  # Assuming you want to include the current GPA as well
+    }
+    
+    return jsonify(data)
+
+@app.route('/api/attendance', methods=['GET'])
+def get_attendance_data():
+    user_id = session.get('student_id')
+    user = User.query.get(user_id)
+    if not user:
+        abort(404)
+    
+    data = {
+        'semesters': [f'Semester {i+1}' for i in range(6)],
+        'attendances': user.attendance
+    }
+    
+    return jsonify(data)
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
