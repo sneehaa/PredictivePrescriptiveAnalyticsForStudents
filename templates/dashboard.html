@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Add Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
 </head>
 <body>
     <div class="container">
@@ -48,6 +48,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                <canvas id="gpaChart" style="display: none;"></canvas>
             </div>
             <div id="attendance" class="semester-attendance" style="display: none">
                 <h3>Semester Attendance</h3>
@@ -59,6 +60,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                <canvas id="attendanceChart" style="display: none;"></canvas>
             </div>
         </div>
     </div>
@@ -75,12 +77,13 @@
         <div class="chatbot__support" style="display: none;">
             <div class="chatbot__header">
                 <p class="chatbot__constant-text">Ask me anything</p>
+                <p class="chatbot__bot-name">Bot</p> <!-- Add this line -->
                 <div class="chatbot__buttons">
                     <button class="chatbot__close--button">
-                        <i class="fas fa-times"></i> <!-- Font Awesome close icon -->
+                        <i class="fas fa-times"></i>
                     </button>
                     <button class="chatbot__delete--button">
-                        <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             </div>
@@ -94,37 +97,117 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Function to initialize the GPA chart
+        function initializeGPAChart(data) {
+            const ctx = document.getElementById('gpaChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.semesters, // Array of semester labels
+                    datasets: [{
+                        label: 'GPA',
+                        data: data.gpas, // Array of GPA values
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    
+        // Function to initialize the Attendance chart
+        function initializeAttendanceChart(data) {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.semesters, // Array of semester labels
+                    datasets: [{
+                        label: 'Attendance',
+                        data: data.attendances, // Array of attendance values
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    
+        // Event listener for GPA button
         document.getElementById("gpa-button").addEventListener("click", function (e) {
             e.preventDefault();
             document.getElementById("gpa").style.display = "block";
             document.getElementById("attendance").style.display = "none";
+            document.getElementById("gpaChart").style.display = "block";
+            document.getElementById("attendanceChart").style.display = "none";
+            
+            // Fetch GPA data from the backend
+            fetch('/api/gpa')
+                .then(response => response.json())
+                .then(data => {
+                    initializeGPAChart(data);
+                })
+                .catch(error => console.error('Error fetching GPA data:', error));
         });
-
+    
+        // Event listener for Attendance button
         document.getElementById("attendance-button").addEventListener("click", function (e) {
             e.preventDefault();
             document.getElementById("gpa").style.display = "none";
             document.getElementById("attendance").style.display = "block";
+            document.getElementById("gpaChart").style.display = "none";
+            document.getElementById("attendanceChart").style.display = "block";
+    
+            // Fetch Attendance data from the backend
+            fetch('/api/attendance')
+                .then(response => response.json())
+                .then(data => {
+                    initializeAttendanceChart(data);
+                })
+                .catch(error => console.error('Error fetching Attendance data:', error));
         });
-
+    
         document.getElementById("logout-button").addEventListener("click", function (e) {
             e.preventDefault();
             window.location.href = "{{ url_for('logout') }}";
         });
-
+    
         // Chatbot functionality
         const chatbotButton = document.querySelector(".chatbot__button");
         const chatbotSupport = document.querySelector(".chatbot__support");
         const chatbotCloseButton = document.querySelector(".chatbot__close--button");
-
+    
         chatbotButton.addEventListener("click", function() {
             chatbotSupport.style.display = "block";
         });
-
+    
         chatbotCloseButton.addEventListener("click", function() {
             chatbotSupport.style.display = "none";
         });
     </script>
+    
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
