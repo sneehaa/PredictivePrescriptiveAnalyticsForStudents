@@ -10,7 +10,7 @@ import json
 
 nltk.download('punkt')
 
-# Load intents file
+
 with open('intents.json', 'r') as f:
     intents = json.load(f)
 
@@ -21,15 +21,15 @@ xy = []
 
 for intent in intents['intents']:
     for pattern in intent['patterns']:
-        # Tokenize each word in the sentence
+        # tokenizinge each word in the sentence
         word_list = tokenize(pattern)
         all_words.extend(word_list)
         xy.append((word_list, intent['tag']))
-    # Add tag to tags if it's not already there
+    # adding tag to tags if it's not already there
     if intent['tag'] not in tags:
         tags.append(intent['tag'])
 
-# Stem and lower each word and remove duplicates
+# stem and lower each word and remove duplicates
 all_words = [stem(w) for w in all_words]
 all_words = sorted(set(all_words))
 tags = sorted(tags)
